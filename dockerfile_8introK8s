@@ -1,0 +1,69 @@
+# orquestadores:
+# similar a docker-compose, pero con mas funcionalidades y más robustos son los orquestadores
+# como Kubernetes, Docker Swarm (descontinuado), OpenShift, etc. AWS ECS, Azure AKS, Google GKE, etc.
+
+# kubernetes/K8s es un orquestador de contenedores que permite desplegar, escalar y gestionar aplicaciones en contenedores
+# se desarrolló en go inicialmente por Google y ahora es un proyecto de la Cloud Native Computing Foundation (CNCF) opensource
+
+# kubernetes no solo funciona con docker, sino que también con otros runtimes de contenedores como containerd, cri-o, etc.
+# y docker no solo se orquesta con K8s, pero normalmente se usan en conjunto al ser los mas populares en sus respectivos campos
+
+# K8s se basa en un cluster, que son un conjunto de máquinas que ejecutan el control y aplicaciones en contenedores
+    # hay nodos maestros (control plane) y nodos trabajadores (worker nodes)
+        # el nodo maestro es el encargado de gestionar el cluster, y los nodos trabajadores son los que ejecutan
+        # las aplicaciones en contenedores
+            # elmaestro se controla con kubectl, que es la herramienta de línea de comandos para interactuar con K8s
+            # kubectl se usa para crear, eliminar, actualizar y consultar recursos en K8s
+        # los nodos trabajadores son los que ejecutan los pods, que son la unidad básica de K8s
+            # un pod es un conjunto de uno o más contenedores que comparten el mismo espacio de red y almacenamiento
+                # estos son los que ejecutan docker, containerd, cri-o, etc.
+
+# K8s puede ser complejo de instalar en producción y por eso nubes como AWS, Azure y Google Cloud ofrecen servicios gestionados de K8s
+# como EKS, AKS y GKE respectivamente, que facilitan la creación y gestión de clusters de K8s
+# para pruebas en local, se puede usar Minikube, Kind, que vienen integradas a docker desktop, o K3s, que es una versión ligera de K8s
+
+# cuando se trabaja con K8s no se interactua con el contenedor sino con el control plane mediante kubectl
+kubectl get nodes
+#     # para ver los nodos del cluster
+kubectl get pods
+#     # para ver los pods del cluster
+
+# para crear un pod se usa un archivo de configuración en formato YAML
+# que define el pod y sus características, por ejemplo:
+# pod.yaml
+apiVersion: v1  
+kind: Pod
+metadata:
+  name: mi-pod
+spec:
+    containers:
+    - name: mi-contenedor
+        image: nginx
+        ports:
+        - containerPort: 80
+# para crear el pod se usa el comando kubectl apply -f pod.yaml
+# para eliminar el pod se usa el comando kubectl delete -f pod.yaml 
+
+# al hacer esto se pueden ver los contenedores creados por K8s en el pod mediante docker ps
+
+# para acceder a los servicios de un pode debemos hacer port forwarding
+kubectl port-forward pod/mi-pod 8080:80
+#     # esto redirige el puerto 8080 del host al puerto 80 del pod
+#     # para acceder al servicio del pod se puede hacer curl http://localhost:8080
+
+# para ver los logs de un pod se usa el comando kubectl logs mi-pod
+
+# para acceder al terminal de un pod se usa el comando kubectl exec -it mi-pod -- /bin/bash
+#     # esto abre una terminal bash dentro del pod, si el contenedor tiene bash instalado
+#     # si no tiene bash, se puede usar sh o el shell que tenga instalado el contenedor
+
+# para eiminar un pod se usa el comando kubectl delete pod mi-pod
+#     # esto elimina el pod y todos los contenedores que contiene
+#     # si se quiere eliminar un pod y todos los recursos asociados, se puede usar el comando kubectl delete -f pod.yaml
+#     # esto elimina el pod y todos los recursos asociados, como servicios, volúmenes, etc.
+
+# para ver los recursos creados en K8s se puede usar el comando kubectl get all
+#     # esto muestra todos los recursos creados en K8s, como pods, servicios, volúmenes, etc.
+
+# kubectl describe pod mi-pod
+#     # esto muestra información detallada sobre el pod, como su estado, eventos, etc.

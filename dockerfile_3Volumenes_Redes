@@ -1,0 +1,83 @@
+########## volumenes manuales en docker ############
+
+# -v "ruta_a_volumen_manual" (carpeta en el host) : "ruta_a_volumen_dentro_del_contenedor" 
+# (carpeta dentro del contenedor), con esto accedo a la carpeta del host desde el contenedor 
+# esta carpeta no se borra al eliminar el contenedor, así que me sirve para persistir datos y compartirlos con
+# el host y otros contenedores
+docker run -dit -v C:\Users\pavo0\Documents\DevSecOps\docker-curso:/docker-curso nginx
+
+# ver el id de mis contenedores acutales 
+docker ps
+
+# ejecutar el comando ls en la carpeta docker-curso dentro del contenedor con id 50881
+docker exec 50881 ls docker-curso
+
+# entrar al terminal bash del contenedor con id 50881
+docker exec -it 50881 bash
+
+    # dentro de el contenedor veré el volumen montado que apunta a la carpeta del host
+    ls docker-curso
+    # puedo crear un archivo acá desde el cotenedor o el host
+    touch test.txt
+
+# si luego creo otro contenedor que monte un volumen a la misma carpeta del host
+docker run -dit -v C:\Users\pavo0\Documents\DevSecOps\docker-curso:/docker-curso nginx
+
+# ver el id de mis contenedores acutales
+docker ps
+
+# y entro al terminal bash del nuevo contenedor con id 4f3b
+docker exec -it 4f3b bash
+
+    # dentro de el contenedor veré el volumen montado que apunta a la carpeta del host
+    ls docker-curso
+    # puedo ver el archivo creado desde el primer contenedor
+    cat docker-curso/test.txt
+
+##### Redes en Docker #####
+# listar las redes creadas en docker
+docker network ls
+    # 3 tipos de drivers de red
+    # bridge: red por defecto, crea una red aislada para los contenedores
+    # host: conecta el contenedor a la red del host, no se aísla
+    # null: no conecta el contenedor a ninguna red, lo aísla completamente
+
+# crear una red bridge personalizada "network-curso"
+docker network create network-curso
+
+# crear un contenedor conectado a la red bridge personalizada
+docker run -dit --network network-curso nginx
+
+# ver la ip del contenedor
+docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" <container_id>
+
+# crear otro contenedor conectado a la misma red  bridge personalizada
+docker run -dit --network network-curso nginx
+    # ver la ip del nuevo contenedor
+    docker inspect -f "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" <new_container_id>
+    # al entrar al terminal bash del primer contenedor
+    docker exec -it <container_id> bash
+    # y hacer ping al segundo contenedor por su ip
+    ping <new_container_ip>
+    # o por su nombre de contenedor
+    ping <new_container_name>
+    # el ping responde, ya que están en la misma red bridge personalizada
+        # tal vez deba instalar ping en el contenedor
+         apt update && apt install -y iputils-ping
+
+# eliminar la red personalizada
+docker network rm network-curso
+
+# crear conectado a una red host personalizada
+docker run -dit --network host nginx
+    # en este caso no hay que exponer puertos, ya que el contenedor se conecta a la red del host
+    # los puertos que abra el contenedor estarán disponibles en la IP del host
+
+# al hacer curl a localhost:80 desde el host, se verá la página de nginx
+# sólo funciona en sistemas Linux, ya que en Windows y MacOS Docker usa una VM para correr los contenedores
+# y no se puede conectar directamente a la red del host
+
+
+
+
+

@@ -1,0 +1,116 @@
+# las imagenes tienen configuraciones estándar para aplicar a un contenedor, pero se pueden personalizar con un 
+# Dockerfile, por ejemplo, que mi contenedor además de lo que trae la imagen, tenga instalado python
+# con el dockerfile puedo crear una version compilada de la imagen que incluya lo que yo quiera y ya luego
+# correr tantos contenedores como quiera con esa imagen personalizada
+
+# los dockerfiles son arhcivos de texto plano que contienen instrucciones para crear una imagen de docker
+# basta con nombrar el archivo Dockerfile y escribir las instrucciones en el
+
+# en dockerhub se pueden encontrar muchos dockerfiles (imágenes) de proyectos open source y oficiales de editores
+    # si el nombre de la imégen en dockerhub no tiene / es porque es oficial, si tiene / es porque es de un usuario (personalizda)
+
+# ejemplo de un dockerfile que instala python, nano y curl partiendo de laimagen oficial de Ubuntu ###
+FROM ubuntu
+# instalar curl y python
+RUN apt-get update && apt-get install -y \ 
+    curl \
+    python3 \
+    nano
+
+##################
+
+# compilar el dockerfile para crear una imagen personalizada
+docker build -t nombre-imagen-personalizada .
+    # el punto al final indica que el dockerfile está en el directorio actual
+
+# correr un contenedor con la imagen personalizada
+docker run -dit nombre-imagen-personalizada
+    # -d: correr en segundo plano
+    # -i: mantener la entrada estándar abierta
+    # -t: asignar un pseudo terminal    
+
+# otras directivas útiles en un dockerfile:
+# establecer el directorio de trabajo dentro del contenedor, cada que entre al 
+# contenedor, se abrirá en este directorio (/app) y no el root... para agilizar el trabajo
+WORKDIR /app
+
+# copiar archivos del host al contenedor, en este caso, copiará todo el contenido del directorio actual 
+# al directorio /app del contenedor
+COPY . /app
+    # si quiero copiar un archivo específico, puedo hacerlo así:
+    COPY archivo.txt /app/archivo.txt
+
+# variables de entorno
+ENV NOMBRE_VARIABLE valor_variable
+    # por ejemplo, si quiero establecer una variable de entorno llamada "APP_ENV" con el valor "producción":
+    # estas variables de entorno se pueden usar en el contenedor para configurar la aplicación
+    # y si estoy en el terminal del contenedor, puedo verlas con el comando `printenv` o echo $NOMBRE_VARIABLE
+    ENV APP_ENV producción
+
+# argumentos de construcción, se pueden usar para pasar valores al momento de construir la imagen
+ARG NOMBRE_ARGUMENTO=valor_por_defecto
+    # se diferencian de las variables de entorno en que al momento del build puedo pasar un valor diferente
+    # y no se pueden usar en el contenedor, solo en el momento de construir la imagen
+    # para pasar un argumento al momento de construir la imagen, se usa el flag --build-arg
+    docker run -dit nombre-imagen-personalizada --build-arg NOMBRE_ARGUMENTO=valor_personalizado
+
+CMD ["comando", "argumento1", "argumento2"]
+    # este comando se ejecutará cuando se inicie el contenedor, por ejemplo, si quiero que al iniciar el contenedor
+    # se ejecute un script llamado start.sh, puedo hacerlo así:
+    CMD ["bash", "start.sh"]
+    # si no pongo CMD, el contenedor no hará nada al iniciarse
+    # cmd es útilpara ejecutar servicios/demonios, por ejemplo, si quiero que al iniciar el contenedor se ejecute nginx como servidor web
+    # puedo hacerlo así:
+    CMD ["nginx", "-g", "daemon off;"]
+    # CMD puede ser reemplazado por el comando que se pase al momento de correr el contenedor
+    # si hago docker run -dit nombre-imagen-personalizada ls, el contenedor se iniciará y ejecutará el comando `ls`
+    # y no ejecutará lo que puse en CMD
+
+ENTRYPOINT ["comando", "argumento1", "argumento2"]
+    # este comando se ejecutará al iniciar el contenedor, pero a diferencia de CMD, no se puede reemplazar
+    # si pongo un comando al momento de correr el contenedor, es decir, siempre se ejecutará lo que ponga en ENTRYPOINT
+    # por ejemplo, si quiero que al iniciar el contenedor se ejecute un script llamado start.sh y no quiero que se pueda reemplazar
+    # puedo hacerlo así:
+    ENTRYPOINT ["bash", "start.sh"]
+    # si hago docker run -dit nombre-imagen-personalizada ls, el contenedor se iniciará y ejecutará el comando `ls`
+    # pero también ejecutará lo que puse en ENTRYPOINT
+
+# Dockerizar un script de python: ##################
+#Entrypoint también puede definirse como un script aparte, que a su vez ejecute un script
+# ejemplo: acá ejecutará un script de python main.py
+    # main.py
+        print("Hola, mundo!")
+
+# entrypoint.sh
+    python3 main.py
+
+# Dockerfile para ejecutar un script de Python
+    # hacer ejecutable el script entrypoint.sh
+    RUN chmod +x entrypoint.sh
+    # ejecutarlo como entrypoint
+    ENTRYPOINT ["./entrypoint.sh"]
+###############################################
+
+# de igual forma podemos dockerizar on script de node
+# si en el RUN hacemos npm install y en nuestro repo ya habíamos instalado npm
+# podemos usar dockerignore para evitar que se copien los archivos de node_modules al contenedor
+# Dockerignore es un archivo que se usa para excluir archivos y directorios del contexto de construcción de Docker
+# por ejemplo, si quiero excluir el directorio node_modules y el archivo .env, puedo hacerlo así:
+    # .dockerignore
+        node_modules
+        .env  
+
+# las imágenes de docker se pueden subir a un repositorio de imágenes, como Docker Hub, para compartirlas
+        # para ducker hub, se debe crear una cuenta y un repositorio
+# para subir una imagen, se debe hacer login en docker hub
+    docker login
+        # ingresar usuario y contraseña de docker hub
+    # etiquetar la imagen con el nombre del repositorio
+    docker tag nombre-imagen-personalizada usuario/repo:nombre-tag
+        # por ejemplo, si mi usuario es "pavo0" y mi repositorio se llama "docker-curso", puedo etiquetar la imagen así:
+        docker tag nombre-imagen-personalizada pavo0/docker-curso:latest
+    # subir la imagen al repositorio
+    docker push usuario/repo:nombre-tag
+        # por ejemplo, si mi usuario es "pavo0" y mi repositorio se llama "docker-curso", puedo subir la imagen así:
+        docker push pavo0/docker-curso:latest   
+        

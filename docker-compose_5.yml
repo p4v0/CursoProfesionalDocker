@@ -1,0 +1,135 @@
+# docker compose es un archivo que se usa para definir y ejecutar aplicaciones multi-contenedor
+# # con docker compose se puede definir una aplicación con varios contenedores, redes y volúmenes
+# # y luego se puede iniciar, detener y administrar la aplicación con un solo comando
+# se define en formato YAML
+
+# services: define los servicios/contenedores 
+services:
+  ubuntu1: # nombre del servicio/contenedor
+    image: ubuntu # imagen de docker a usar
+    tty: true # mantiene el contenedor en ejecución y el terminal activo
+    container_name: ubuntu1 # nombre del contenedor
+  # esto define un contenedor básico como el que definíamos con
+    # docker run -dit --name ubuntu ubuntu
+
+# para ejecutar este archivo se usa el comando
+  # docker compose up -d
+    # -d significa que se ejecuta en segundo plano (detached mode) y es opcional
+# para detener el contenedor (y recursos asociados a este archivo) se usa el comando
+  # docker compose down (o CTRL + C  si está en primer plano)
+
+# docker compose por defecto crea una red bridge para los contenedores que defina dentro del archivo
+    # la red se llama nombre_capeta_que_contiene_el_archivo_docker-compose_default
+  # para ver los contenedores que están en ejecución se usa el comando
+    # docker ps
+  # para ver los ejecutados por compose se usa el comando
+    # docker compose ps
+
+# compose funciona similar a terraform: si hago un cambio en el archivo y lo vuelvo a ejecutar "docker compose up"
+# se aplican los cambios, pero si el contenedor ya existe no se recrea, a menos que algun cambio lo afecte, como 
+# cambiar el nombre del contenedor... si agrego más contenedores, se crean nuevos contenedores pero 
+# los que ya existen no se tocan, a menos que se les haga un cambio que los afecte.
+
+  nginx: # nombre del servicio/contenedor
+    image: nginx # imagen de docker a usar
+    tty: true # mantiene el contenedor en ejecución y el terminal activo
+    container_name: nginx # nombre del contenedor
+    # para exponer puertos se usa la opción ports
+    ports:
+      - "8080:80" # expone el puerto 80 del contenedor al puerto 8080 del host
+      - "8443:443" # expone el puerto 443 del contenedor al puerto 8443 del host
+      # recordar que los puertos se exponen para poder alcanzar el servicio desde el host, sino estarán sólo disponibles
+      # dentro del contenedor y no se podrá acceder a ellos desde el host
+    #networks: # opcional, puedo elegir a qué red se conecta el contenedor (sino se usará la default creada por compose)
+      #- mynetwork # conecta el contenedor a la red  personalizada mynetwork
+    #vloumes: # opcional, define los volúmenes manuales que se usarán en el contenedor
+    #  - ./nginx:/usr/share/nginx/html # monta el directorio ./nginx del host en /usr/share/nginx/html del contenedor
+      # esto permite que los archivos del host estén disponibles dentro del contenedor y viceversa
+      # si el directorio ./nginx no existe, se creará automáticamente 
+
+# opcional
+#networks: # define las redes que se usarán en los contenedores
+#  mynetwork: # nombre de la red personalizada
+#    external: true # indica que la red es externa, es decir, ya existe y no se creará una nueva
+      # para crear la red personalizada se usa el comando
+      # docker network create mynetwork
+
+# para volumenes manejados por compose se usa la sección volumes
+#volumes: # define los volúmenes que se usarán en los contenedores  
+#  myvolume: # nombre del volumen
+      # este volumen se creará automáticamente y se usará en los contenedores que se defina
+      # volumes: 
+      # - myvolume:/data # monta el volumen myvolume en el directorio /data del contenedor
+          # los volúmenes no se eliminan al usar "docker compose down", se deben eliminar manualmente con el comando
+          # docker volume rm myvolume
+
+# variables de entorno
+  mysql: 
+    image: mysql 
+    tty: true
+    container_name: mysql 
+    ports:
+      - "3306:3306" 
+    environment: # define las variables de entorno que se usarán en el contenedor
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # contraseña del usuario root de MySQL, se lee desde la variable en el .env
+      MYSQL_DATABASE: mydb # nombre de la base de datos a crear al iniciar el contenedor
+      MYSQL_USER: user # nombre del usuario a crear
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD} # contraseña del usuario a crear, se lee desde el .env
+    volumes: # define los volúmenes que se usarán en el contenedor
+      - ./volumen/mysql:/var/lib/mysql # monta el volumen "volumen" en el directorio /var/lib/mysql del contenedor
+        # este volumen se usará para persistir los datos de MySQL, si no se usa un volumen, los datos se perderán al detener el contenedor
+
+# si algun contenedor no corrió posiblemente hubo errores al iniciar, para ver los logs de un contenedor se usa el comando
+# docker compose logs <id_del_contenedor>
+  # para ver todos los contenedores corriendo o no se usa el comando
+  # docker ps -a
+    # de ahí se toma el id del contenedor para ver sus logs
+
+# con compose puedo crear un stack completo de desarrollo, por ejemplo este: ############
+  #services: # ya definido arriba
+  python: # nombre del servicio/contenedor
+    image: python # imagen de docker a usar
+    tty: true # mantiene el contenedor en ejecución y el terminal activo
+    container_name: python # nombre del contenedor
+    volumes: # define los volúmenes que se usarán en el contenedor
+      - .:/scripts # monta todo el directorio actual en el contenedor, para que los scripts de Python estén disponibles
+
+  redis: # nombre del servicio/contenedor
+    image: redis # imagen de docker a usar
+    container_name: redis # nombre del contenedor
+    ports:
+      - "6379:6379" # expone el puerto 6379 del contenedor al puerto 6379 del host
+
+  db: # nombre del servicio/contenedor
+    image: mysql # imagen de docker a usar
+    ports:
+      - "3306:3306" # expone el puerto 3306 del contenedor al puerto 3306 del host
+    volumes: # define los volúmenes que se usarán en el contenedor
+      - ./volumen/mysql:/var/lib/mysql # monta el volumen "volumen" en el directorio /var/lib/mysql del contenedor
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # contraseña del usuario root de MySQL, se lee desde la variable en el .env
+      MYSQL_DATABASE: mydb # nombre de la base de datos a crear al iniciar el contenedor
+      MYSQL_USER: user # nombre del usuario a crear
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD} # contraseña del usuario a crear, se lee desde el .env
+  
+  phpmyadmin: # nombre del servicio/contenedor
+    image: phpmyadmin/phpmyadmin # imagen de docker a usar
+    container_name: phpmyadmin # nombre del contenedor
+    ports:
+      - "8081:80" # expone el puerto 80 del contenedor al puerto 8081 del host
+    environment:
+      PMA_HOST: db # host de la base de datos, en este caso el servicio db definido arriba
+      PMA_PORT: 3306 # puerto de la base de datos, en este caso el puerto 3306 de MySQL
+    depends_on: # indica que este contenedor depende del contenedor db
+      - db # espera a que el contenedor db esté listo antes de iniciar este contenedor
+    
+    # tener en cuenta que en los archivos de config de algunos programas debo cambiar los servicios
+    # por el nombre del contenedor, por ejemplo en phpmyadmin debo cambiar el host de la base de datos por 
+    # el nombre del servicio: "db", en este caso
+    
+############################################
+
+# para usar imagenes personalizadas, se puede usar la opción build
+# build: # define la ruta al Dockerfile que se usará para construir la imagen
+#   context: ./ruta/al/dockerfile # ruta al Dockerfile
+#   dockerfile: Dockerfile # nombre del Dockerfile, si no se especifica se usa el nombre por defecto "Dockerfile"
