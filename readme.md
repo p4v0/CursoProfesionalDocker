@@ -35,7 +35,7 @@ git clone https://github.com/p4v0/CursoProfesionalDocker
 
 Este repositorio se comparte bajo licencia MIT. Si te resulta útil, siéntete libre de compartirlo y contribuir.
 
-Sólo asegúrate de agredecer al autor original :smile: @p4v0
+Sólo asegúrate de agredecer al autor original :smile: [@p4v0](https://github.com/p4v0)
 
 ---
 
