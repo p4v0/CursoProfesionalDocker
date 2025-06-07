@@ -26,7 +26,7 @@ Este repositorio contiene notas, ejemplos y archivos de configuración utilizado
 Este repositorio es público y puede ser utilizado por cualquier persona interesada en aprender Docker. Puedes clonar el repositorio y adaptar los ejemplos a tus necesidades.
 
 ```sh
-git clone https://github.com/tu-usuario/docker-curso.git
+git clone https://github.com/p4v0/CursoProfesionalDocker
 ```
 
 > **Nota:** Los archivos y ejemplos están pensados para fines educativos y pueden requerir adaptación según tu entorno.
