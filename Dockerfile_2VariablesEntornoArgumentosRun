@@ -1,0 +1,36 @@
+# nombre de la imagen base a utilizar sacado de dockerhub
+FROM ubuntu 
+
+# variable de entorno para evitar la interacción del usuario
+# las variables de entorno son configuraciones que afectan el comportamiento del contenedor
+ENV DEBIAN_FRONTEND=nointeractive 
+
+# ARG es una instrucción que define una variable de entorno que puede ser pasada al contenedor en tiempo de construcción/build
+# en este caso, se define un editor de texto por defecto
+# similar a ENV pero se puede modificar al momento del build si se pasa el argumento por la línea de comandos
+ARG TEXT_EDITOR=nano
+
+# ejecución de comandos en el contenedor a la hora del build
+RUN apt-get update && apt-get install -y \
+    python3 \
+    curl \
+    ${TEXT_EDITOR}
+
+
+# copia todo el contenido del directorio actual al contenedor en la ruta /app
+# ojo, se debe definir un .dockerignore para evitar copiar archivos innecesarios
+# o confidenciales a la imagen
+COPY . /app
+
+# workdir establece el directorio de trabajo para cualquier comando RUN, CMD, ENTRYPOINT, COPY y ADD que siga en el Dockerfile
+WORKDIR /app
+
+# el comando CMD especifica el comando que se ejecutará cuando se inicie un contenedor a partir de la imagen
+# en este caso, se ejecuta el servicio nginx
+CMD [ "nginx", "-g", "daemon off;" ]
+
+# entrypoint es similar a CMD, pero no se sobreescribe si se pasa un comando al contenedor
+# para casos en los que se quiere ejecutar un script o un comando específico al iniciar el contenedor
+
+# al ejecutar docker build -t <nombre_imagen> . se compila la imagen
+# (desde la carpeta donde se encuentra el Dockerfile)
