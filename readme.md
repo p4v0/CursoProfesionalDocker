@@ -5,9 +5,10 @@ Este repositorio contiene notas, ejemplos y archivos de configuración utilizado
 ## Estructura del repositorio
 
 - `.env`: Archivo de variables de entorno (ignorado por git).
-- `docker-compose_5.yml`: Ejemplo de archivo Docker Compose con múltiples servicios, redes y volúmenes.
+- `Dockerfile_2VariablesEntornoArgumentosRun`: Ejemplo de Dockerfile básico con Variables de entorno, argumentos y run.
 - `dockerfile_3Volumenes_Redes`: Notas y ejemplos sobre el uso de volúmenes y redes en Docker.
 - `dockerfile_4Imágenes`: Ejemplos y explicación sobre la creación de imágenes personalizadas con Dockerfile.
+- `docker-compose_5.yml`: Ejemplo de archivo Docker Compose con múltiples servicios, redes y volúmenes.
 - `dockerfile_8introK8s`: Introducción básica a Kubernetes y orquestadores de contenedores.
 - `volumen/`: Carpeta utilizada como volumen para persistencia de datos (ignorada por git).
 
