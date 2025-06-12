@@ -1,6 +1,11 @@
 # Curso Docker - Notas y Ejemplos
 
-Este repositorio contiene notas, ejemplos y archivos de configuración utilizados durante el curso Profesional de Docker de Código Facilito. El objetivo es documentar conceptos clave, comandos útiles y ejemplos prácticos para aprender y repasar Docker, Docker Compose, volúmenes, redes y conceptos básicos de orquestadores como Kubernetes.
+Este repositorio contiene notas, ejemplos y archivos de configuración utilizados durante el [Curso Profesional de Docker de Código Facilito](https://codigofacilito.com/cursos/docker). El objetivo es documentar conceptos clave, comandos útiles y ejemplos prácticos/ejecutables para aprender y repasar Docker, Docker Compose, volúmenes, redes y conceptos básicos de orquestadores como Kubernetes.
+
+## Ejemplos visuales
+
+![Máquinas virtuales vs Contenedores](./images/VMsVsContainers.png)
+![Arquitectura docker](./images/arqui_docker.png)
 
 ## Estructura del repositorio
 
@@ -12,7 +17,7 @@ Este repositorio contiene notas, ejemplos y archivos de configuración utilizado
 - `dockerfile_8introK8s`: Introducción básica a Kubernetes y orquestadores de contenedores.
 - `volumen/`: Carpeta utilizada como volumen para persistencia de datos (ignorada por git).
 
-Puedes ejecutar todos los dockerfile editando su nombre quitando el "_" y lo que hay a la derecha de este (es decir, quedando así "dockerfile" 🙂) el archivo 5 (compose) debería correr sin problemas
+Puedes ejecutar todos los dockerfile editando su nombre quitando el "\_" y lo que hay a la derecha de este (es decir, quedando así "dockerfile" 🙂) el archivo 5 (compose) debería correr sin problemas
 
 ## Temas cubiertos
 
