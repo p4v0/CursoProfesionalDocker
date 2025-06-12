@@ -27,6 +27,8 @@ Docker sólo corre en Linux, pero se puede trabajar en Windows a través de WSL2
 docker run -d -p 8080:80 --name webserver httpd:latest
 ```
 
+> **Nota:** Docker desktop debe estar instalado y corriendo si ejecutas este comando en Windows o Mac. En Linux, asegúrate de tener Docker instalado y el daemon corriendo.
+
 ### Parámetros del comando
 
 - `docker run`: Comando para ejecutar un contenedor, si la imagen de este contenedor no existe localmente, Docker la descargará de Docker Hub

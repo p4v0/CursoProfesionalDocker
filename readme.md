@@ -24,7 +24,7 @@ Docker utiliza una arquitectura cliente-servidor, donde el cliente Docker se com
 - `dockerfile_3Volumenes_Redes`: Notas y ejemplos sobre el uso de volúmenes y redes en Docker.
 - `dockerfile_4Imágenes`: Ejemplos y explicación sobre la creación de imágenes personalizadas con Dockerfile.
 - `docker-compose_5.yml`: Ejemplo de archivo Docker Compose con múltiples servicios, redes y volúmenes.
-- `dockerfile_8introK8s`: Introducción básica a Kubernetes y orquestadores de contenedores.
+- `dockerfile_6introK8s`: Introducción básica a Kubernetes y orquestadores de contenedores.
 - `volumen/`: Carpeta local (sí, tampoco la verás aquí) utilizada como volumen para persistencia de datos (ignorada por git).
 
 Puedes ejecutar cada dockerfile para verlo en acción editando primero su nombre quitando el "\_" y lo que hay a la derecha de este (es decir, quedando solamente "dockerfile" 🙂) y el archivo 5 (compose) debería correr sin problemas
