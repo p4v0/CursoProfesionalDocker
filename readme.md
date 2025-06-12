@@ -12,6 +12,8 @@ Este repositorio contiene notas, ejemplos y archivos de configuración utilizado
 - `dockerfile_8introK8s`: Introducción básica a Kubernetes y orquestadores de contenedores.
 - `volumen/`: Carpeta utilizada como volumen para persistencia de datos (ignorada por git).
 
+Puedes ejecutar todos los dockerfile editando su nombre quitando el "_" y lo que hay a la derecha de este (es decir, quedando así "dockerfile" 🙂) el archivo 5 (compose) debería correr sin problemas
+
 ## Temas cubiertos
 
 - Conceptos básicos de Docker y contenedores.
