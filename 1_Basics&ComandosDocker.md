@@ -72,7 +72,7 @@ docker exec -it <nombre_contenedor> /bin/bash
 # Para construir/compilar una imagen a partir de un Dockerfile
 docker build -t <nombre_imagen> .
 
-# Para ejecutar un contenedor a partir de una imagen
+# Para ejecutar un contenedor a partir de una imagen (ya descargada o compilada localmente)
 docker run -d -p 8080:80 --name <nombre_contenedor> <nombre_imagen>
 ```
 
