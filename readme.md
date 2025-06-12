@@ -4,7 +4,7 @@ Este repositorio contiene notas, ejemplos y archivos de configuración utilizado
 
 ## Basics
 
-### máquinas virtuales vs contenedores
+### Máquinas virtuales vs Contenedores
 
 Las máquinas virtuales y los contenedores son tecnologías de virtualización, pero tienen diferencias clave:
 
